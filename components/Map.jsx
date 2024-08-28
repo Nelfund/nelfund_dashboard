@@ -1,14 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Circle, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { fetchRecords } from "@/lib/airtable"; // Adjust the path accordingly
+import { useEffect, useState } from "react";
 
-const Dashboard = () => {
-  const [records, setRecords] = useState([]);
+import React from "react";
+
+function Map() {
   const [locationData, setLocationData] = useState([]);
-  const [filter, setFilter] = useState({ name: "", location: "" });
+  const [records, setRecords] = useState([]);
 
   useEffect(() => {
     const getData = async () => {
@@ -90,22 +92,6 @@ const Dashboard = () => {
     return coordinatesMap[location] || { lat: 0, lng: 0 };
   };
 
-  const handleFilter = (e) => {
-    const { name, value } = e.target;
-    setFilter((prevFilter) => ({
-      ...prevFilter,
-      [name]: value,
-    }));
-  };
-
-  const filteredRecords = records.filter(
-    (record) =>
-      (record.name?.toLowerCase() || "").includes(filter.name.toLowerCase()) &&
-      (record.location?.toLowerCase() || "").includes(
-        filter.location.toLowerCase()
-      )
-  );
-
   const getColor = (amount) => {
     switch (true) {
       case amount >= 1 && amount <= 100:
@@ -120,83 +106,13 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-50 m flex flex-col">
-      {/* Filters */}
-      <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input
-          type="text"
-          name="name"
-          placeholder="Filter by name"
-          value={filter.name}
-          onChange={handleFilter}
-          className="border p-3 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-        />
-        <input
-          type="text"
-          name="location"
-          placeholder="Filter by state"
-          value={filter.location}
-          onChange={handleFilter}
-          className="border p-3 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
-        />
-      </div>
-
-      {/* Table */}
-      <div className="overflow-x-auto mb-6">
-        <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-lg">
-          <thead>
-            <tr className="bg-blue-100 border-b">
-              {[
-                "Name",
-                "Email",
-                "State",
-                "Number",
-                "Institution",
-                "Others",
-                "Course",
-                "Level",
-                "Matric",
-                "Jamb",
-              ].map((header) => (
-                <th
-                  key={header}
-                  className="text-left p-3 text-gray-700 font-semibold"
-                >
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {filteredRecords.map((record) => (
-              <tr
-                key={record.id}
-                className="border-b hover:bg-blue-50 transition duration-300"
-              >
-                <td className="p-3 text-gray-600">{record.name}</td>
-                <td className="p-3 text-gray-600">{record.email}</td>
-                <td className="p-3 text-gray-600">{record.location}</td>
-                <td className="p-3 text-gray-600">{record.number}</td>
-                <td className="p-3 text-gray-600">{record.institution}</td>
-                <td className="p-3 text-gray-600">{record.others}</td>
-                <td className="p-3 text-gray-600">{record.course}</td>
-                <td className="p-3 text-gray-600">{record.level}</td>
-                <td className="p-3 text-gray-600">{record.matric}</td>
-                <td className="p-3 text-gray-600">{record.jamb}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Map */}
-
-      {/* <div className="flex-grow">
+    <>
+      <div className=" flex grow px-10 py-16 ">
         <MapContainer
           center={[9.082, 8.6753]}
           zoom={6}
           minZoom={5}
-          maxZoom={6}
+          maxZoom={7}
           style={{ height: "500px", width: "100%" }}
           className="shadow-lg rounded-lg overflow-hidden"
         >
@@ -221,9 +137,43 @@ const Dashboard = () => {
             </Circle>
           ))}
         </MapContainer>
-      </div> */}
-    </div>
+      </div>
+      {/* Legend */}
+      <div className=" px-10 pb-10">
+        <h3 className="text-lg font-semibold mb-2">Legend</h3>
+        <ul className="flex flex-col space-y-1">
+          <li className="flex items-center">
+            <span
+              className="inline-block w-4 h-4 mr-2"
+              style={{ backgroundColor: "green" }}
+            ></span>
+            1 - 100 candidates
+          </li>
+          <li className="flex items-center">
+            <span
+              className="inline-block w-4 h-4 mr-2"
+              style={{ backgroundColor: "orange" }}
+            ></span>
+            101 - 500 candidates
+          </li>
+          <li className="flex items-center">
+            <span
+              className="inline-block w-4 h-4 mr-2"
+              style={{ backgroundColor: "red" }}
+            ></span>
+            501 - 1000 candidates
+          </li>
+          <li className="flex items-center">
+            <span
+              className="inline-block w-4 h-4 mr-2"
+              style={{ backgroundColor: "gray" }}
+            ></span>
+            &gt; 1000 candidates
+          </li>
+        </ul>
+      </div>
+    </>
   );
-};
+}
 
-export default Dashboard;
+export default Map;
