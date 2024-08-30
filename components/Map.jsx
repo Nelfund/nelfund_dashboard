@@ -59,7 +59,7 @@ function Map() {
       Bayelsa: { lat: 4.7719, lng: 6.0846 },
       Benue: { lat: 7.1904, lng: 8.1317 },
       Borno: { lat: 11.8333, lng: 13.15 },
-      CrossRiver: { lat: 4.9589, lng: 8.3269 },
+      CrossRiver: { lat: 5.888, lng: 8.597 },
       Delta: { lat: 5.7047, lng: 5.9336 },
       Ebonyi: { lat: 6.2649, lng: 8.0137 },
       Edo: { lat: 6.5244, lng: 5.8987 },
@@ -111,8 +111,13 @@ function Map() {
         <MapContainer
           center={[9.082, 8.6753]}
           zoom={6}
-          minZoom={5}
-          maxZoom={7}
+          minZoom={6}
+          maxZoom={6}
+          dragging={false}
+          scrollWheelZoom={false}
+          doubleClickZoom={false}
+          touchZoom={false}
+          keyboard={false}
           style={{ height: "500px", width: "100%" }}
           className="shadow-lg rounded-lg overflow-hidden"
         >
